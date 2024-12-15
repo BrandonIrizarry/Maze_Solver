@@ -1,0 +1,7 @@
+__pycache__/
+*~
+/.dir-locals.el
+\#*
+.\#*
+*\.org
+*\.org_archive
