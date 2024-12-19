@@ -59,47 +59,62 @@ class Cell:
         self.size = size
 
     def create(self):
+        x_scaled = self.x * self.size
+        y_scaled = self.y * self.size
+
+        northwest = (x_scaled, y_scaled)
+        northeast = (x_scaled + self.size, y_scaled)
+        southwest = (x_scaled, y_scaled + self.size)
+        southeast = (x_scaled + self.size, y_scaled + self.size)
+
         self.perimeter = {
-            Direction.NORTH: self.canvas.create_line(self.x,
-                                                     self.y,
-                                                     self.x + 1,
-                                                     self.y,
+            Direction.NORTH: self.canvas.create_line(northwest,
+                                                     northeast,
                                                      width=2,
                                                      fill="black"),
-            Direction.SOUTH: self.canvas.create_line(self.x,
-                                                     self.y + 1,
-                                                     self.x + 1,
-                                                     self.y + 1,
+            Direction.SOUTH: self.canvas.create_line(southwest,
+                                                     southeast,
                                                      width=2,
                                                      fill="black"),
-            Direction.EAST: self.canvas.create_line(self.x + 1,
-                                                    self.y,
-                                                    self.x + 1,
-                                                    self.y + 1,
+            Direction.EAST: self.canvas.create_line(northeast,
+                                                    southeast,
                                                     width=2,
                                                     fill="black"),
-            Direction.WEST: self.canvas.create_line(self.x,
-                                                    self.y,
-                                                    self.x,
-                                                    self.y + 1,
+            Direction.WEST: self.canvas.create_line(northwest,
+                                                    southwest,
                                                     width=2,
                                                     fill="black"),
             }
-
-        for line in self.perimeter.values():
-            canvas.scale(line, self.x, self.y, self.size, self.size)
 
     def open_direction(self, direction: Direction):
         canvas.itemconfig(self.perimeter[direction], fill="white")
 
 
+class Graph:
+    def __init__(self, canvas: tk.Canvas, num_columns, num_rows, cell_size):
+        self.graph: list[list[Cell]] = []
+
+        for x in range(num_columns):
+            self.graph.append([])
+
+            for y in range(num_rows):
+                self.graph[-1].append(Cell(canvas, x, y, cell_size))
+
+    def create(self):
+        for column in self.graph:
+            for cell in column:
+                cell.create()
+
+
+task_queue = []
+
+
 if __name__ == "__main__":
     loop = Loop(delay_secs=0.5)
-    cell1 = Cell(canvas, 30, 30, 50)
+    graph = Graph(canvas, 4, 4, 50)
 
     task_queue = [
-        lambda: cell1.create(),
-        lambda: cell1.open_direction(Direction.NORTH)
+        lambda: graph.create()
     ]
 
     loop.run(root, task_queue)
