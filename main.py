@@ -6,12 +6,23 @@ from enum import Enum, auto
 
 Task: TypeAlias = Callable[[], int | Any | None]
 
+cell_size = 50
+num_columns = 4
+num_rows = 4
+
+width = cell_size * num_columns
+height = cell_size * num_rows
+
 root = tk.Tk()
+root.geometry(f"{width + cell_size * 4}x{height + cell_size * 4}")
 root.title("Maze Solver")
 
-canvas = tk.Canvas(width=800, height=600)
-canvas.config(bg="white")
-canvas.pack()
+canvas = tk.Canvas(root,
+                   width=width + cell_size * 2,
+                   height=height + cell_size * 2,
+                   bg="white")
+
+canvas.pack(anchor=tk.CENTER, expand=True)
 
 
 class Direction(Enum):
@@ -108,7 +119,7 @@ class Graph:
             self.graph.append([])
 
             for y in range(num_rows):
-                self.graph[-1].append(Cell(canvas, x, y, cell_size))
+                self.graph[-1].append(Cell(canvas, x + 1, y + 1, cell_size))
 
     def create(self):
         for column in self.graph:
