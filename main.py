@@ -108,6 +108,9 @@ class Cell:
         for line in self.perimeter.values():
             canvas.scale(line, self.x, self.y, self.size, self.size)
 
+    def hide(self, direction: Direction):
+        canvas.itemconfig(self.perimeter[direction], fill="white")
+
 
 if __name__ == "__main__":
     loop = Loop(delay_secs=0.5)
@@ -123,6 +126,7 @@ if __name__ == "__main__":
         lambda: line1.hide(),
         lambda: line2.hide(),
         lambda: cell1.create(),
+        lambda: cell1.hide(Direction.NORTH)
     ]
 
     loop.run(root, task_queue)
