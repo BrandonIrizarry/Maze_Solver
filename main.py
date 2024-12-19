@@ -1,5 +1,8 @@
 import tkinter as tk
+import time
+from typing import Callable, TypeAlias
 
+Task: TypeAlias = list[Callable[[], None]]
 
 root = tk.Tk()
 root.title("Maze Solver")
@@ -17,7 +20,7 @@ class Loop:
     def __init__(self):
         self.is_running = True
 
-    def run(self, root: tk.Tk):
+    def run(self, root: tk.Tk, task_queue: list[Task]):
         def close_handler():
             self.is_running = False
 
@@ -27,7 +30,19 @@ class Loop:
             root.update_idletasks()
             root.update()
 
+            if task_queue:
+                task = task_queue.pop(0)
+                task()
+
+            time.sleep(2)
+
 
 if __name__ == "__main__":
     loop = Loop()
-    loop.run(root)
+
+    task_queue = [
+        lambda *_, **__: canvas.create_line(20, 30, 40, 50, width=2, fill="red"),
+        lambda *_, **__: canvas.create_line(70, 80, 90, 100, width=3, fill="blue")
+    ]
+
+    loop.run(root, task_queue)
