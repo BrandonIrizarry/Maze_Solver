@@ -9,6 +9,7 @@ root = tk.Tk()
 root.title("Maze Solver")
 
 canvas = tk.Canvas(width=800, height=600)
+canvas.config(bg="white")
 canvas.pack()
 
 
