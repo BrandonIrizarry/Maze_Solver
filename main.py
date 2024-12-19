@@ -20,6 +20,11 @@ class Direction(Enum):
     WEST = auto()
 
 
+class Command(Enum):
+    INSTANT = auto(),
+    DELAYED = auto()
+
+
 class Loop:
     """A class used to properly manage the scope of 'is_running',
     which is used to exit the redisplay loop upon closing the GUI
@@ -29,6 +34,7 @@ class Loop:
     def __init__(self, delay_secs=1):
         self.is_running = True
         self.delay_secs = delay_secs
+        self.default_delay_secs = self.delay_secs
 
     def run(self, root: tk.Tk, task_queue: list[Task]):
         def close_handler():
@@ -42,7 +48,13 @@ class Loop:
 
             if task_queue:
                 task = task_queue.pop(0)
-                task()
+                command = task()
+
+                if command == Command.INSTANT:
+                    self.delay_secs = 0
+                elif command == Command.DELAYED:
+                    self.delay_secs = self.default_delay_secs
+
             else:
                 # Change this to 0, so we can close the window without
                 # there being a noticeable delay.
@@ -114,6 +126,7 @@ if __name__ == "__main__":
     graph = Graph(canvas, 4, 4, 50)
 
     task_queue = [
+        lambda: Command.INSTANT,
         lambda: graph.create()
     ]
 
