@@ -1,9 +1,10 @@
 import tkinter as tk
 import time
-from typing import Callable, TypeAlias
+import random
+from typing import Callable, TypeAlias, Any
 from enum import Enum, auto
 
-Task: TypeAlias = Callable[[], int]
+Task: TypeAlias = Callable[[], int | Any | None]
 
 root = tk.Tk()
 root.title("Maze Solver")
@@ -99,6 +100,8 @@ class Cell:
 
 class Graph:
     def __init__(self, canvas: tk.Canvas, num_columns, num_rows, cell_size):
+        self.num_columns = num_columns
+        self.num_rows = num_rows
         self.graph: list[list[Cell]] = []
 
         for x in range(num_columns):
@@ -112,8 +115,14 @@ class Graph:
             for cell in column:
                 cell.create()
 
+    def remove_random_bar(self) -> None:
+        x: int = random.randint(0, self.num_columns - 1)
+        y: int = random.randint(0, self.num_rows - 1)
+        direction: Direction = random.choice(list(Direction))
 
-task_queue = []
+        cell = self.graph[x][y]
+        print(x, y)
+        cell.open_direction(direction)
 
 
 if __name__ == "__main__":
@@ -123,6 +132,8 @@ if __name__ == "__main__":
     task_queue = [
         lambda: Command.INSTANT,
         lambda: graph.create(),
+        lambda: Command.DELAYED,
+        lambda: graph.remove_random_bar(),
         lambda: Command.INSTANT
     ]
 
