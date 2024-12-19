@@ -70,38 +70,35 @@ class Cell:
         self.size = size
 
     def create(self):
-        self.top_bar = self.canvas.create_line(self.x,
-                                               self.y,
-                                               self.x + 1,
-                                               self.y,
-                                               width=2,
-                                               fill="black")
+        self.perimeter = {
+            "top": self.canvas.create_line(self.x,
+                                           self.y,
+                                           self.x + 1,
+                                           self.y,
+                                           width=2,
+                                           fill="black"),
+            "left": self.canvas.create_line(self.x,
+                                            self.y,
+                                            self.x,
+                                            self.y + 1,
+                                            width=2,
+                                            fill="black"),
+            "right": self.canvas.create_line(self.x + 1,
+                                             self.y,
+                                             self.x + 1,
+                                             self.y + 1,
+                                             width=2,
+                                             fill="black"),
+            "bottom": self.canvas.create_line(self.x,
+                                              self.y + 1,
+                                              self.x + 1,
+                                              self.y + 1,
+                                              width=2,
+                                              fill="black"),
+            }
 
-        self.left_bar = self.canvas.create_line(self.x,
-                                                self.y,
-                                                self.x,
-                                                self.y + 1,
-                                                width=2,
-                                                fill="black")
-
-        self.right_bar = self.canvas.create_line(self.x + 1,
-                                                 self.y,
-                                                 self.x + 1,
-                                                 self.y + 1,
-                                                 width=2,
-                                                 fill="black")
-
-        self.bottom_bar = self.canvas.create_line(self.x,
-                                                  self.y + 1,
-                                                  self.x + 1,
-                                                  self.y + 1,
-                                                  width=2,
-                                                  fill="black")
-
-        canvas.scale(self.top_bar, self.x, self.y, self.size, self.size)
-        canvas.scale(self.left_bar, self.x, self.y, self.size, self.size)
-        canvas.scale(self.right_bar, self.x, self.y, self.size, self.size)
-        canvas.scale(self.bottom_bar, self.x, self.y, self.size, self.size)
+        for line in self.perimeter.values():
+            canvas.scale(line, self.x, self.y, self.size, self.size)
 
 
 if __name__ == "__main__":
