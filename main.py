@@ -55,11 +55,6 @@ class Loop:
                 elif command == Command.DELAYED:
                     self.delay_secs = self.default_delay_secs
 
-            else:
-                # Change this to 0, so we can close the window without
-                # there being a noticeable delay.
-                self.delay_secs = 0
-
             time.sleep(self.delay_secs)
 
 
@@ -127,7 +122,8 @@ if __name__ == "__main__":
 
     task_queue = [
         lambda: Command.INSTANT,
-        lambda: graph.create()
+        lambda: graph.create(),
+        lambda: Command.INSTANT
     ]
 
     loop.run(root, task_queue)
