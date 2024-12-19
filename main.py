@@ -1,6 +1,7 @@
 import tkinter as tk
 import time
 from typing import Callable, TypeAlias
+from enum import Enum, auto
 
 Task: TypeAlias = Callable[[], int]
 
@@ -9,6 +10,13 @@ root.title("Maze Solver")
 
 canvas = tk.Canvas(width=800, height=600)
 canvas.pack()
+
+
+class Direction(Enum):
+    NORTH = auto(),
+    SOUTH = auto(),
+    EAST = auto(),
+    WEST = auto()
 
 
 class Loop:
@@ -71,30 +79,30 @@ class Cell:
 
     def create(self):
         self.perimeter = {
-            "top": self.canvas.create_line(self.x,
-                                           self.y,
-                                           self.x + 1,
-                                           self.y,
-                                           width=2,
-                                           fill="black"),
-            "left": self.canvas.create_line(self.x,
-                                            self.y,
-                                            self.x,
-                                            self.y + 1,
-                                            width=2,
-                                            fill="black"),
-            "right": self.canvas.create_line(self.x + 1,
-                                             self.y,
-                                             self.x + 1,
-                                             self.y + 1,
-                                             width=2,
-                                             fill="black"),
-            "bottom": self.canvas.create_line(self.x,
-                                              self.y + 1,
-                                              self.x + 1,
-                                              self.y + 1,
-                                              width=2,
-                                              fill="black"),
+            Direction.NORTH: self.canvas.create_line(self.x,
+                                                     self.y,
+                                                     self.x + 1,
+                                                     self.y,
+                                                     width=2,
+                                                     fill="black"),
+            Direction.SOUTH: self.canvas.create_line(self.x,
+                                                     self.y + 1,
+                                                     self.x + 1,
+                                                     self.y + 1,
+                                                     width=2,
+                                                     fill="black"),
+            Direction.EAST: self.canvas.create_line(self.x + 1,
+                                                    self.y,
+                                                    self.x + 1,
+                                                    self.y + 1,
+                                                    width=2,
+                                                    fill="black"),
+            Direction.WEST: self.canvas.create_line(self.x,
+                                                    self.y,
+                                                    self.x,
+                                                    self.y + 1,
+                                                    width=2,
+                                                    fill="black"),
             }
 
         for line in self.perimeter.values():
