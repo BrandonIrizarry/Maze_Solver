@@ -51,26 +51,6 @@ class Loop:
             time.sleep(self.delay_secs)
 
 
-class Line:
-    def __init__(self, canvas: tk.Canvas, x1, y1, x2, y2):
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-        self.canvas = canvas
-
-    def create(self):
-        self.line = self.canvas.create_line(self.x1,
-                                            self.y1,
-                                            self.x2,
-                                            self.y2,
-                                            width=2,
-                                            fill="red")
-
-    def hide(self):
-        self.canvas.itemconfig(self.line, fill="gray")
-
-
 class Cell:
     def __init__(self, canvas: tk.Canvas, x, y, size):
         self.canvas = canvas
@@ -115,17 +95,9 @@ class Cell:
 
 if __name__ == "__main__":
     loop = Loop(delay_secs=0.5)
-
-    line1 = Line(canvas, 20, 30, 100, 150)
-    line2 = Line(canvas, 70, 80, 120, 140)
-
     cell1 = Cell(canvas, 30, 30, 50)
 
     task_queue = [
-        lambda: line1.create(),
-        lambda: line2.create(),
-        lambda: line1.hide(),
-        lambda: line2.hide(),
         lambda: cell1.create(),
         lambda: cell1.open_direction(Direction.NORTH)
     ]
