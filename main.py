@@ -34,6 +34,10 @@ class Loop:
             if task_queue:
                 task = task_queue.pop(0)
                 task()
+            else:
+                # Change this to 0, so we can close the window without
+                # there being a noticeable delay.
+                self.delay_secs = 0
 
             time.sleep(self.delay_secs)
 
