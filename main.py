@@ -62,17 +62,62 @@ class Line:
         self.canvas.itemconfig(self.line, fill="gray")
 
 
+class Cell:
+    def __init__(self, canvas: tk.Canvas, x, y, size):
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.size = size
+
+    def create(self):
+        self.top_bar = self.canvas.create_line(self.x,
+                                               self.y,
+                                               self.x + 1,
+                                               self.y,
+                                               width=2,
+                                               fill="black")
+
+        self.left_bar = self.canvas.create_line(self.x,
+                                                self.y,
+                                                self.x,
+                                                self.y + 1,
+                                                width=2,
+                                                fill="black")
+
+        self.right_bar = self.canvas.create_line(self.x + 1,
+                                                 self.y,
+                                                 self.x + 1,
+                                                 self.y + 1,
+                                                 width=2,
+                                                 fill="black")
+
+        self.bottom_bar = self.canvas.create_line(self.x,
+                                                  self.y + 1,
+                                                  self.x + 1,
+                                                  self.y + 1,
+                                                  width=2,
+                                                  fill="black")
+
+        canvas.scale(self.top_bar, self.x, self.y, self.size, self.size)
+        canvas.scale(self.left_bar, self.x, self.y, self.size, self.size)
+        canvas.scale(self.right_bar, self.x, self.y, self.size, self.size)
+        canvas.scale(self.bottom_bar, self.x, self.y, self.size, self.size)
+
+
 if __name__ == "__main__":
     loop = Loop(delay_secs=0.5)
 
     line1 = Line(canvas, 20, 30, 100, 150)
     line2 = Line(canvas, 70, 80, 120, 140)
 
+    cell1 = Cell(canvas, 30, 30, 50)
+
     task_queue = [
         lambda: line1.create(),
         lambda: line2.create(),
         lambda: line1.hide(),
-        lambda: line2.hide()
+        lambda: line2.hide(),
+        lambda: cell1.create(),
     ]
 
     loop.run(root, task_queue)
