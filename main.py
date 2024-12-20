@@ -186,7 +186,7 @@ class Graph:
 
 
 if __name__ == "__main__":
-    graph = Graph(canvas, num_columns, num_rows, 50)
+    graph = Graph(canvas, num_columns, num_rows, cell_size)
 
     # This is essentially a task queue, but implemented as a
     # generator.
