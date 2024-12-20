@@ -1,6 +1,6 @@
 import tkinter as tk
 import random
-from typing import Callable, TypeAlias, Any
+from typing import Callable, TypeAlias, Any, Generator
 from enum import Enum, auto
 from functools import partialmethod
 
@@ -128,7 +128,7 @@ class Graph:
 
         cell.open_direction(direction)
 
-    def open_path(self) -> None:
+    def open_path(self) -> Generator:
         """Perform a random depth-first search on this graph, opening
         a path that will be the maze.
 
@@ -175,6 +175,8 @@ class Graph:
             elif yn == y and xn == x - 1:
                 self.graph[x][y].open_direction(Direction.WEST)
 
+            yield
+
             history_stack.append((xn, yn))
             visited.add((xn, yn))
 
@@ -185,7 +187,12 @@ if __name__ == "__main__":
     def tasks():
         graph.create()
         yield
-        graph.open_path()
+        steps = graph.open_path()
+
+        while True:
+            next(steps)
+            yield
+
         yield
 
     iter = tasks()
