@@ -227,5 +227,5 @@ if __name__ == "__main__":
 
         canvas.after(delay_millis, animate, delay_millis)
 
-    animate(100)
+    animate(10)
     root.mainloop()
