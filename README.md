@@ -1,6 +1,6 @@
 # Maze Solver
 
-This Python 3 program runs an animated graphic of a maze first being
+This Python program runs an animated graphic of a maze first being
 constructed, then being solved.
 
 The maze is constructed using a randomized depth-first search. The
