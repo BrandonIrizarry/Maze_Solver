@@ -86,6 +86,23 @@ class Cell:
     open_direction = partialmethod(_configure_direction, do_open=True)
     close_direction = partialmethod(_configure_direction, do_open=False)
 
+    def compute_center(self) -> Point:
+        """Return scaled center point.
+
+        """
+        x_scaled = self.x * self.size
+        y_scaled = self.y * self.size
+
+        center_x = x_scaled + self.size / 2
+        center_y = y_scaled + self.size / 2
+
+        return (center_x, center_y)
+
+    def draw_connecting_line(self, dest_cell: "Cell", fill: str):
+        cx, cy = self.compute_center()
+        dx, dy = dest_cell.compute_center()
+
+        self.canvas.create_line(cx, cy, dx, dy, width=2, fill=fill)
 
 def get_neighbors(x, y, xlimit=1000, ylimit=1000):
     """Helper function to obtain neighboring 2D Cartesian coordinates
