@@ -132,6 +132,10 @@ class Graph:
         """Perform a random depth-first search on this graph, opening
         a path that will be the maze.
 
+        To integrate each individual call to 'Cell.open_direction'
+        with the animation loop, this method is implemented as a
+        generator.
+
         """
         visited: set[Point] = set()
 
