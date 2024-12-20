@@ -242,18 +242,25 @@ class Graph:
                 history_stack.pop()
 
                 xb, yb = history_stack[-1]
-                print(xb, yb)
-                neighbor_cell = self.graph[xb][yb]
+                cell = self.graph[xb][yb]
 
-                print(neighbor_cell or "None")
-                self.graph[x][y].draw_connecting_line(neighbor_cell, "gray")
+                self.graph[x][y].draw_connecting_line(cell, "gray")
 
                 yield
 
                 if history_stack == []:
                     return
 
+
+            xn, yn = neighbor_coords[0]
+            neighbor_cell = self.graph[xn][yn]
+
+            self.graph[x][y].draw_connecting_line(neighbor_cell, fill="red")
             yield
+
+            history_stack.append((xn, yn))
+            visited.add((xn, yn))
+
 
 if __name__ == "__main__":
     root, canvas, graph = configure_gui(10, 10, 50)
