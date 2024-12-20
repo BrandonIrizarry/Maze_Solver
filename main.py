@@ -196,7 +196,11 @@ if __name__ == "__main__":
         steps = graph.open_path()
 
         while True:
-            next(steps)
+            try:
+                next(steps)
+            except StopIteration:
+                break
+
             yield
 
         yield
@@ -204,7 +208,10 @@ if __name__ == "__main__":
     iter = tasks()
 
     def animate():
-        next(iter)
+        try:
+            next(iter)
+        except StopIteration:
+            return
 
         canvas.after(500, animate)
 
