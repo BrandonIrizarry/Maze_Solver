@@ -8,23 +8,26 @@ from functools import partialmethod
 Task: TypeAlias = Callable[[], int | Any | None]
 Point: TypeAlias = tuple[int, int]
 
-cell_size = 50
-num_columns = 10
-num_rows = 10
 
-width = cell_size * num_columns
-height = cell_size * num_rows
+def configure_gui(num_columns, num_rows, cell_size):
+    width = cell_size * num_columns
+    height = cell_size * num_rows
 
-root = tk.Tk()
-root.geometry(f"{width + cell_size * 4}x{height + cell_size * 4}")
-root.title("Maze Solver")
+    root = tk.Tk()
+    root.geometry(f"{width + cell_size * 4}x{height + cell_size * 4}")
+    root.title("Maze Solver")
 
-canvas = tk.Canvas(root,
-                   width=width + cell_size * 2,
-                   height=height + cell_size * 2,
-                   bg="white")
+    canvas = tk.Canvas(root,
+                       width=width + cell_size * 2,
+                       height=height + cell_size * 2,
+                       bg="white")
 
-canvas.pack(anchor=tk.CENTER, expand=True)
+    canvas.pack(anchor=tk.CENTER, expand=True)
+
+    # Define the graph here as well.
+    graph = Graph(canvas, num_columns, num_rows, cell_size)
+
+    return root, canvas, graph
 
 
 class Direction(Enum):
@@ -186,7 +189,7 @@ class Graph:
 
 
 if __name__ == "__main__":
-    graph = Graph(canvas, num_columns, num_rows, cell_size)
+    root, canvas, graph = configure_gui(10, 10, 50)
 
     # This is essentially a task queue, but implemented as a
     # generator.
