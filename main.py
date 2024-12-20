@@ -144,6 +144,8 @@ class Graph:
             neighbor_coords: list[Point] = []
             x, y = None, None
 
+            # Move backwards along the stack until we find a
+            # searchable node in the graph.
             while True:
                 x, y = history_stack[-1]
                 neighbor_coords = get_neighbors(x,
