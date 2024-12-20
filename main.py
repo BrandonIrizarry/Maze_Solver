@@ -8,8 +8,8 @@ from functools import partialmethod
 Task: TypeAlias = Callable[[], int | Any | None]
 
 cell_size = 50
-num_columns = 4
-num_rows = 4
+num_columns = 10
+num_rows = 10
 
 width = cell_size * num_columns
 height = cell_size * num_rows
