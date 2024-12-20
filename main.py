@@ -99,6 +99,10 @@ class Cell:
         return (center_x, center_y)
 
     def draw_connecting_line(self, dest_cell: "Cell", fill: str):
+        """Method used to construct the maze-solution-path segment by
+        segment (including backtracks.)
+
+        """
         cx, cy = self.compute_center()
         dx, dy = dest_cell.compute_center()
 
