@@ -110,7 +110,7 @@ class Graph:
 
 
 if __name__ == "__main__":
-    graph = Graph(canvas, 4, 4, 50)
+    graph = Graph(canvas, num_columns, num_rows, 50)
 
     task_queue = [
         lambda: graph.create(),
