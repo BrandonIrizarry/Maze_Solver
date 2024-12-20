@@ -224,6 +224,10 @@ class Graph:
         history_stack: list[Point] = [(0, 0)]
         visited.add((0, 0))
 
+        # The maze is considered solved when the DFS reaches the
+        # bottom-right cell.
+        destination: Point = (self.num_columns - 1, self.num_rows - 1)
+
         while history_stack != []:
             neighbor_coords: list[Point] = []
             x, y = None, None
@@ -257,6 +261,9 @@ class Graph:
 
             self.graph[x][y].draw_connecting_line(neighbor_cell, fill="red")
             yield
+
+            if (xn, yn) == destination:
+                return
 
             history_stack.append((xn, yn))
             visited.add((xn, yn))
