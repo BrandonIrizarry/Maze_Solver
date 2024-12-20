@@ -3,6 +3,8 @@ import time
 import random
 from typing import Callable, TypeAlias, Any
 from enum import Enum, auto
+from functools import partialmethod
+
 
 Task: TypeAlias = Callable[[], int | Any | None]
 
@@ -43,7 +45,7 @@ class Loop:
     window.
 
     """
-    def __init__(self, delay_secs=1):
+    def __init__(self, delay_secs=10):
         self.is_running = True
         self.delay_secs = delay_secs
         self.default_delay_secs = self.delay_secs
@@ -59,15 +61,20 @@ class Loop:
             root.update()
 
             if task_queue:
-                task = task_queue.pop(0)
-                command = task()
+                what = task_queue.pop(0)
+                print(what)
 
-                if command == Command.INSTANT:
+                if what == Command.INSTANT:
                     self.delay_secs = 0
-                elif command == Command.DELAYED:
-                    self.delay_secs = self.default_delay_secs
+                    continue
 
-            time.sleep(self.delay_secs)
+                if what == Command.DELAYED:
+                    self.delay_secs = self.default_delay_secs
+                    continue
+
+                time.sleep(self.delay_secs)
+                what()
+
 
 
 class Cell:
@@ -105,8 +112,19 @@ class Cell:
                                                     fill="black"),
             }
 
-    def open_direction(self, direction: Direction):
-        canvas.itemconfig(self.perimeter[direction], fill="white")
+    def _configure_direction(self, direction: Direction, do_open: bool):
+        # For some reason, 'Canvas.itemconfig' doesn't work when
+        # configuring Direction.EAST. So we instead create a new line
+        # from scratch, and reassign to the appropriate perimeter
+        # entry.
+        x1, y1, x2, y2 = self.canvas.coords(self.perimeter[direction])
+        line = self.canvas.create_line(x1, y1, x2, y2, width=2,
+                                       fill="white" if do_open else "black")
+
+        self.perimeter[direction] = line
+
+    open_direction = partialmethod(_configure_direction, do_open=True)
+    close_direction = partialmethod(_configure_direction, do_open=False)
 
 
 class Graph:
@@ -129,23 +147,34 @@ class Graph:
     def remove_random_bar(self) -> None:
         x: int = random.randint(0, self.num_columns - 1)
         y: int = random.randint(0, self.num_rows - 1)
+        print(list(Direction))
         direction: Direction = random.choice(list(Direction))
+        print(direction)
 
         cell = self.graph[x][y]
+
         print(x, y)
         cell.open_direction(direction)
 
+def get_open_lambda(direction):
+    return lambda: graph.graph[0][3].open_direction(direction)
+
+def get_close_lambda(direction):
+    return lambda: graph.graph[0][3].close_direction(direction)
 
 if __name__ == "__main__":
     loop = Loop(delay_secs=0.5)
     graph = Graph(canvas, 4, 4, 50)
 
     task_queue = [
-        lambda: Command.INSTANT,
+        Command.INSTANT,
         lambda: graph.create(),
-        lambda: Command.DELAYED,
-        lambda: graph.remove_random_bar(),
-        lambda: Command.INSTANT
+        Command.DELAYED,
     ]
 
+    for direction in list(Direction):
+        task_queue.append(get_open_lambda(direction))
+        task_queue.append(get_close_lambda(direction))
+
+    task_queue.append(Command.INSTANT)
     loop.run(root, task_queue)
