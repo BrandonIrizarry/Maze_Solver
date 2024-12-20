@@ -178,6 +178,8 @@ class Graph:
 
             # Open a path from the current cell to the selected
             # neighbor.
+            #
+            # This is also where the draw-directive takes place.
             if xn == x and yn == y - 1:
                 self.graph[x][y].open_direction(Direction.NORTH)
             elif xn == x and yn == y + 1:
