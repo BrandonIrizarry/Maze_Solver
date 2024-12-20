@@ -159,6 +159,9 @@ class Graph:
 
                 history_stack.pop()
 
+                if history_stack == []:
+                    return
+
             xn, yn = random.choice(neighbor_coords)
 
             if xn == x and yn == y - 1:
