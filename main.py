@@ -34,49 +34,6 @@ class Direction(Enum):
     WEST = auto()
 
 
-class Command(Enum):
-    INSTANT = auto(),
-    DELAYED = auto()
-
-
-class Loop:
-    """A class used to properly manage the scope of 'is_running',
-    which is used to exit the redisplay loop upon closing the GUI
-    window.
-
-    """
-    def __init__(self, delay_secs=10):
-        self.is_running = True
-        self.delay_secs = delay_secs
-        self.default_delay_secs = self.delay_secs
-
-    def run(self, root: tk.Tk, task_queue: list[Task]):
-        def close_handler():
-            self.is_running = False
-
-        root.protocol("WM_DELETE_WINDOW", close_handler)
-
-        while self.is_running:
-            root.update_idletasks()
-            root.update()
-
-            if task_queue:
-                what = task_queue.pop(0)
-                print(what)
-
-                if what == Command.INSTANT:
-                    self.delay_secs = 0
-                    continue
-
-                if what == Command.DELAYED:
-                    self.delay_secs = self.default_delay_secs
-                    continue
-
-                time.sleep(self.delay_secs)
-                what()
-
-
-
 class Cell:
     def __init__(self, canvas: tk.Canvas, x, y, size):
         self.canvas = canvas
@@ -156,25 +113,25 @@ class Graph:
         print(x, y)
         cell.open_direction(direction)
 
-def get_open_lambda(direction):
-    return lambda: graph.graph[0][3].open_direction(direction)
-
-def get_close_lambda(direction):
-    return lambda: graph.graph[0][3].close_direction(direction)
 
 if __name__ == "__main__":
-    loop = Loop(delay_secs=0.5)
     graph = Graph(canvas, 4, 4, 50)
 
+    i = 0
     task_queue = [
-        Command.INSTANT,
         lambda: graph.create(),
-        Command.DELAYED,
     ]
 
-    for direction in list(Direction):
-        task_queue.append(get_open_lambda(direction))
-        task_queue.append(get_close_lambda(direction))
+    for i in range(10):
+        task_queue.append(lambda: graph.remove_random_bar())
 
-    task_queue.append(Command.INSTANT)
-    loop.run(root, task_queue)
+    def animate():
+        if task_queue:
+            task = task_queue.pop(0)
+            task()
+
+
+        canvas.after(500, animate)
+
+    animate()
+    root.mainloop()
