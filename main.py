@@ -210,13 +210,13 @@ if __name__ == "__main__":
 
     iter = tasks()
 
-    def animate():
+    def animate(delay_millis):
         try:
             next(iter)
         except StopIteration:
             return
 
-        canvas.after(100, animate)
+        canvas.after(delay_millis, animate, delay_millis)
 
-    animate()
+    animate(100)
     root.mainloop()
