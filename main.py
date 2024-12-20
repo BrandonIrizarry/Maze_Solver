@@ -1,5 +1,4 @@
 import tkinter as tk
-import time
 import random
 from typing import Callable, TypeAlias, Any
 from enum import Enum, auto
@@ -104,20 +103,15 @@ class Graph:
     def remove_random_bar(self) -> None:
         x: int = random.randint(0, self.num_columns - 1)
         y: int = random.randint(0, self.num_rows - 1)
-        print(list(Direction))
         direction: Direction = random.choice(list(Direction))
-        print(direction)
-
         cell = self.graph[x][y]
 
-        print(x, y)
         cell.open_direction(direction)
 
 
 if __name__ == "__main__":
     graph = Graph(canvas, 4, 4, 50)
 
-    i = 0
     task_queue = [
         lambda: graph.create(),
     ]
@@ -129,7 +123,6 @@ if __name__ == "__main__":
         if task_queue:
             task = task_queue.pop(0)
             task()
-
 
         canvas.after(500, animate)
 
