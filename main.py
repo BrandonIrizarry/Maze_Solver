@@ -270,7 +270,7 @@ class Graph:
 
 
 if __name__ == "__main__":
-    root, canvas, graph = configure_gui(10, 10, 50)
+    root, canvas, graph = configure_gui(100, 100, 5)
 
     # This is essentially a task queue, but implemented as a
     # generator.
@@ -307,5 +307,5 @@ if __name__ == "__main__":
 
         canvas.after(delay_millis, animate, delay_millis)
 
-    animate(10)
+    animate(1)
     root.mainloop()
