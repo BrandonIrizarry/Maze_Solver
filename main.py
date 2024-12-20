@@ -132,6 +132,9 @@ class Graph:
         self.num_columns = num_columns
         self.num_rows = num_rows
         self.graph: list[list[Cell]] = []
+
+        # This is used to keep track of which cells are accessible
+        # from a given point, after the maze paths have been built.
         self.open_neighbors: dict[Point, list[Point]] = dict()
 
         for x in range(num_columns):
@@ -215,6 +218,9 @@ class Graph:
             history_stack.append((xn, yn))
             visited.add((xn, yn))
 
+            # While not part of the maze-construction DFS, we must
+            # report that there is now an open path between the
+            # current cell and this neighbor.
             self.open_neighbors[(x, y)].append((xn, yn))
 
     def solve(self) -> Generator:
@@ -249,6 +255,8 @@ class Graph:
 
                 history_stack.pop()
 
+                # Here is where we backtrack if the maze-solution has
+                # encountered a dead-end.
                 xb, yb = history_stack[-1]
                 cell = self.graph[xb][yb]
 
@@ -266,9 +274,11 @@ class Graph:
             self.graph[x][y].draw_connecting_line(neighbor_cell, fill="red")
             yield
 
+            # We've reached the bottom-right corner: we're done.
             if (xn, yn) == destination:
                 return
 
+            # Else, continue the DFS.
             history_stack.append((xn, yn))
             visited.add((xn, yn))
 
