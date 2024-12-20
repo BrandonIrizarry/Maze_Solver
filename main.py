@@ -213,7 +213,7 @@ if __name__ == "__main__":
         except StopIteration:
             return
 
-        canvas.after(500, animate)
+        canvas.after(100, animate)
 
     animate()
     root.mainloop()
