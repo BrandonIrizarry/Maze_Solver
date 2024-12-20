@@ -213,6 +213,47 @@ class Graph:
 
             self.open_neighbors[(x, y)].append((xn, yn))
 
+    def solve(self) -> Generator:
+        if self.open_neighbors[(0, 0)] == []:
+            raise Exception("Maze hasn't been constructed yet")
+
+        visited: set[Point] = set()
+
+        # Use an ordinary list as a stack, representing the history of
+        # visited nodes.
+        history_stack: list[Point] = [(0, 0)]
+        visited.add((0, 0))
+
+        while history_stack != []:
+            neighbor_coords: list[Point] = []
+            x, y = None, None
+
+            # Move backwards along the stack until we find a
+            # searchable node in the graph.
+            while True:
+                x, y = history_stack[-1]
+                neighbor_coords = self.open_neighbors[(x, y)]
+                neighbor_coords = [n for n in neighbor_coords
+                                   if n not in visited]
+
+                if neighbor_coords != []:
+                    break
+
+                history_stack.pop()
+
+                xb, yb = history_stack[-1]
+                print(xb, yb)
+                neighbor_cell = self.graph[xb][yb]
+
+                print(neighbor_cell or "None")
+                self.graph[x][y].draw_connecting_line(neighbor_cell, "gray")
+
+                yield
+
+                if history_stack == []:
+                    return
+
+            yield
 
 if __name__ == "__main__":
     root, canvas, graph = configure_gui(10, 10, 50)
@@ -232,7 +273,15 @@ if __name__ == "__main__":
 
             yield
 
-        yield
+        solution = graph.solve()
+
+        while True:
+            try:
+                next(solution)
+            except StopIteration:
+                break
+
+            yield
 
     iter = tasks()
 
