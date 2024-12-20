@@ -6,6 +6,7 @@ from functools import partialmethod
 
 
 Task: TypeAlias = Callable[[], int | Any | None]
+Point: TypeAlias = tuple[int, int]
 
 cell_size = 50
 num_columns = 10
@@ -83,6 +84,25 @@ class Cell:
     close_direction = partialmethod(_configure_direction, do_open=False)
 
 
+def get_neighbors(x, y, xlimit=1000, ylimit=1000):
+    """Helper function to obtain neighboring 2D Cartesian coordinates
+    within a certain boundary.
+
+    """
+    result = []
+
+    for i in [-1, 0, 1]:
+        for j in [-1, 0, 1]:
+            if (i == 0) ^ (j == 0):
+                xprime = x + i
+                yprime = y + j
+
+                if xprime in range(xlimit) and yprime in range(ylimit):
+                    result.append((xprime, yprime))
+
+    return result
+
+
 class Graph:
     def __init__(self, canvas: tk.Canvas, num_columns, num_rows, cell_size):
         self.num_columns = num_columns
@@ -108,16 +128,59 @@ class Graph:
 
         cell.open_direction(direction)
 
+    def open_path(self) -> None:
+        """Perform a random depth-first search on this graph, opening
+        a path that will be the maze.
+
+        """
+        visited: set[Point] = set()
+
+        # Use an ordinary list as a stack, representing the history of
+        # visited nodes.
+        history_stack: list[Point] = [(0, 0)]
+        visited.add((0, 0))
+
+        while history_stack != []:
+            neighbor_coords: list[Point] = []
+            x, y = None, None
+
+            while True:
+                x, y = history_stack[-1]
+                neighbor_coords = get_neighbors(x,
+                                                y,
+                                                self.num_columns,
+                                                self.num_rows)
+
+                neighbor_coords = [n for n in neighbor_coords
+                                   if n not in visited]
+
+                if neighbor_coords != []:
+                    break
+
+                history_stack.pop()
+
+            xn, yn = random.choice(neighbor_coords)
+
+            if xn == x and yn == y - 1:
+                self.graph[x][y].open_direction(Direction.NORTH)
+            elif xn == x and yn == y + 1:
+                self.graph[x][y].open_direction(Direction.SOUTH)
+            elif yn == y and xn == x + 1:
+                self.graph[x][y].open_direction(Direction.EAST)
+            elif yn == y and xn == x - 1:
+                self.graph[x][y].open_direction(Direction.WEST)
+
+            history_stack.append((xn, yn))
+            visited.add((xn, yn))
+
 
 if __name__ == "__main__":
     graph = Graph(canvas, num_columns, num_rows, 50)
 
     task_queue = [
         lambda: graph.create(),
+        lambda: graph.open_path(),
     ]
-
-    for i in range(10):
-        task_queue.append(lambda: graph.remove_random_bar())
 
     def animate():
         if task_queue:
