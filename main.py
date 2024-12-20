@@ -173,6 +173,8 @@ class Graph:
 
             xn, yn = random.choice(neighbor_coords)
 
+            # Open a path from the current cell to the selected
+            # neighbor.
             if xn == x and yn == y - 1:
                 self.graph[x][y].open_direction(Direction.NORTH)
             elif xn == x and yn == y + 1:
