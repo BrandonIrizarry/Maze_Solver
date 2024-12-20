@@ -9,6 +9,13 @@ Task: TypeAlias = Callable[[], int | Any | None]
 Point: TypeAlias = tuple[int, int]
 
 
+class Direction(Enum):
+    NORTH = auto(),
+    SOUTH = auto(),
+    EAST = auto(),
+    WEST = auto()
+
+
 def configure_gui(num_columns, num_rows, cell_size):
     width = cell_size * num_columns
     height = cell_size * num_rows
@@ -30,11 +37,23 @@ def configure_gui(num_columns, num_rows, cell_size):
     return root, canvas, graph
 
 
-class Direction(Enum):
-    NORTH = auto(),
-    SOUTH = auto(),
-    EAST = auto(),
-    WEST = auto()
+def get_neighbors(x, y, xlimit=1000, ylimit=1000):
+    """Helper function to obtain neighboring 2D Cartesian coordinates
+    within a certain boundary.
+
+    """
+    result = []
+
+    for i in [-1, 0, 1]:
+        for j in [-1, 0, 1]:
+            if (i == 0) ^ (j == 0):
+                xprime = x + i
+                yprime = y + j
+
+                if xprime in range(xlimit) and yprime in range(ylimit):
+                    result.append((xprime, yprime))
+
+    return result
 
 
 class Cell:
@@ -107,24 +126,6 @@ class Cell:
         dx, dy = dest_cell.compute_center()
 
         self.canvas.create_line(cx, cy, dx, dy, width=2, fill=fill)
-
-def get_neighbors(x, y, xlimit=1000, ylimit=1000):
-    """Helper function to obtain neighboring 2D Cartesian coordinates
-    within a certain boundary.
-
-    """
-    result = []
-
-    for i in [-1, 0, 1]:
-        for j in [-1, 0, 1]:
-            if (i == 0) ^ (j == 0):
-                xprime = x + i
-                yprime = y + j
-
-                if xprime in range(xlimit) and yprime in range(ylimit):
-                    result.append((xprime, yprime))
-
-    return result
 
 
 class Graph:
@@ -266,7 +267,6 @@ class Graph:
 
                 if history_stack == []:
                     return
-
 
             xn, yn = neighbor_coords[0]
             neighbor_cell = self.graph[xn][yn]
