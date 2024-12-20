@@ -182,15 +182,16 @@ class Graph:
 if __name__ == "__main__":
     graph = Graph(canvas, num_columns, num_rows, 50)
 
-    task_queue = [
-        lambda: graph.create(),
-        lambda: graph.open_path(),
-    ]
+    def tasks():
+        graph.create()
+        yield
+        graph.open_path()
+        yield
+
+    iter = tasks()
 
     def animate():
-        if task_queue:
-            task = task_queue.pop(0)
-            task()
+        next(iter)
 
         canvas.after(500, animate)
 
