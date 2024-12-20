@@ -188,6 +188,8 @@ class Graph:
 if __name__ == "__main__":
     graph = Graph(canvas, num_columns, num_rows, 50)
 
+    # This is essentially a task queue, but implemented as a
+    # generator.
     def tasks():
         graph.create()
         yield
