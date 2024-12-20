@@ -111,12 +111,15 @@ class Graph:
         self.num_columns = num_columns
         self.num_rows = num_rows
         self.graph: list[list[Cell]] = []
+        self.open_neighbors: dict[Point, list[Point]] = dict()
 
         for x in range(num_columns):
             self.graph.append([])
 
             for y in range(num_rows):
                 self.graph[-1].append(Cell(canvas, x + 1, y + 1, cell_size))
+
+                self.open_neighbors[(x, y)] = []
 
     def create(self):
         for column in self.graph:
@@ -188,6 +191,8 @@ class Graph:
 
             history_stack.append((xn, yn))
             visited.add((xn, yn))
+
+            self.open_neighbors[(x, y)].append((xn, yn))
 
 
 if __name__ == "__main__":
